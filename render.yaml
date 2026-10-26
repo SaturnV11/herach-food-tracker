@@ -1,0 +1,22 @@
+# Paid service + persistent disk. Review Render's estimated cost before creating.
+services:
+  - type: web
+    name: herach-food-tracker
+    runtime: node
+    plan: starter
+    buildCommand: node --check server.mjs
+    startCommand: node server.mjs
+    healthCheckPath: /manifest.webmanifest
+    envVars:
+      - key: NODE_VERSION
+        value: 24.22.1
+      - key: HOST
+        value: 0.0.0.0
+      - key: COOKIE_SECURE
+        value: "1"
+      - key: DB_PATH
+        value: /var/data/herach.sqlite
+    disk:
+      name: herach-data
+      mountPath: /var/data
+      sizeGB: 1

@@ -1,0 +1,5 @@
+import {test} from 'node:test';import assert from 'node:assert/strict';import {readFileSync} from 'node:fs';import {validateState,validateDay} from '../public/validation.js';import {initial} from '../public/store.js';import {createDay,snapshot} from '../public/domain.js';
+const seed=JSON.parse(readFileSync(new URL('../public/seed.json',import.meta.url)));
+test('seed, new days and actual snapshots satisfy schema',()=>{const s=initial(structuredClone(seed));const d=createDay(s,'2026-10-26');s.days[d.date]=d;d.extras.push({id:'e',snapshot:snapshot(s.foods.leite,200)});assert.doesNotThrow(()=>validateState(s));});
+test('bad quantities, dangling references and corrupt labels refused before import',()=>{for(const corrupt of [s=>s.foods.leite.base=0,s=>s.foods.leite.nutrients.carbs=-1,s=>s.menu[0][0].items[0].foodId='missing',s=>s.goals[0].low=120]){const s=initial(structuredClone(seed));corrupt(s);assert.throws(()=>validateState(s));}});
+test('malformed day records cannot be accepted by API',()=>{const s=initial(structuredClone(seed));const d=createDay(s,'2026-10-26');d.records['99:nonexistent']={status:'consumed',snapshot:{}};assert.throws(()=>validateDay(d));});

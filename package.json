@@ -1,0 +1,14 @@
+{
+  "name": "herach-food-tracker",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node server.mjs",
+    "test": "node --test tests/domain.test.mjs tests/server.test.mjs tests/validation.test.mjs tests/offline.test.mjs",
+    "check": "node --check server.mjs && node --check public/app.js && node --check public/domain.js && node --check public/store.js"
+  },
+  "engines": {
+    "node": ">=24"
+  }
+}
